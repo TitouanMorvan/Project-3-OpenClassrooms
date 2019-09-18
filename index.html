@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/gif" href="images/cyclisme-50px.png">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/font/style.css">
+
+    <!-- Affichage sur Twitter -->
+    <meta name="twitter:card" content="Service de location de bicloos sur la ville de Nantes et ses environs."/>
+    <meta name="twitter:title" content="Location de bicloos sur Nantes"/>
+
+    <!-- Affichage iOS -->
+    <link rel="apple-touch-icon" href="images/ico/apple-touch-icon-144-precomposed.png"/>
+    <link rel="apple-touch-icon-precomposed" media="screen and (resolution: 326dpi)" href="images/ico/apple-touch-icon-114-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" media="screen and (resolution: 132dpi)" href="images/ico/apple-touch-icon-72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" media="screen and (resolution: 163dpi)" href="images/ico/apple-touch-icon-57-precomposed.png" />
+    <meta name="theme-color" content="#ffffff"><!-- Android, iOS, Firefox OS  -->
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="Location de bicloos à Nantes" >
+    <meta property="og:type" content="website" >
+    <meta property="og:url" content="http://maufret-jeremie.ovh/apivelo/" >
+    <meta property="og:image" content="images/03.jpg" >
+    <meta property="og:description" content="Venez réserver un bicloo et baladez-vous dans Nantes et ses environs !" >
+    
+    <!-- API -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+
+    <title>Location de vélos sur Nantes</title>
+
+
+</head>
+
+<body>
+    <header>
+        <h1><span class="icon-bicycle"></span>Réservation de Bicloos à Nantes<span class="icon-bicycle"></span></h1>
+    </header>
+
+    <section id="diaporama">
+
+        <!-- Diaporama -->
+        <div class="container">
+            <div class="fade">
+                <div><img src="images/21.png" alt="capture écran etape 1"></div>
+            </div>
+            <div class="fade">
+                <div><img src="images/22.png" alt="capture écran etape 2"></div>
+            </div>
+            <div class="fade">
+                <div><img src="images/23.png" alt="capture écran etape 3"></div>
+            </div>
+            <div class="fade">
+                <div><img src="images/24.png" alt="capture écran etape 4"></div>
+            </div>
+            <div class="fade">
+                <div><img src="images/25.png" alt="capture écran etape 5"></div>
+            </div>
+        </div>
+
+        <!-- Boutons du diaporama -->
+        <div id="positionButton">
+            <button class="prev"><span class="icon-chevron-left"></span></button>
+            <button class="stop"><span class="icon-pause"></span></button>
+            <button class="play"><span class="icon-play"></span></button>
+            <button class="next"><span class="icon-chevron-right"></span></button>
+        </div>
+    </section>
+
+    <div id="mapFormulaire">
+
+        <!-- Map -->
+        <div id="mapid"></div>
+
+        <!-- Formulaire de la map -->
+        <div id="formulaire" class="fadeBlock">
+            <p id="ville"></p>
+            <div id="infoStation">
+                <span class="icon-map-marker"></span>
+                <p id="status"></p>
+                <p id="numero"></p>         
+                <p id="station"></p>
+                <p id="adresse"></p>
+                
+                <!-- Champs utilisateur -->
+                <div class="utilisateur">
+                    <p>
+                        <label for="name">Nom :</label>
+                        <input type="text" id="name" name="user_nom" value="">
+                    </p>
+                    <p>
+                        <label for="prenom">Prénom :</label>
+                        <input type="text" id="prenom" name="user_prenom" value="">
+                    </p>
+                    <p class="button">
+                        <button class="reservation" type="submit">Réservation</button>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Informations sur les vélos de la station -->
+            <div id="infoVelo">
+                <span class="icon-bicycle"></span>
+                <p id="nbPlace"></p>
+                <p id="veloDispo"></p>
+                <p id="placeVide"></p>
+            </div>
+
+            <!-- Dernière mise à jour de la station -->
+            <p id="maj"></p>
+                </div>
+                </div>
+
+    <!-- Canvas -->
+    <div id="popup"></div>
+    
+    <div id="signature" class="fadeBlock">
+        <div>
+            <p id="infoSignature"></p>
+            <p id="infoId"></p>
+            <p></p>
+        </div>
+
+        <canvas id="canvas" width="200" height="200">
+            Votre navigateur ne prend pas en compte la balise canvas
+        </canvas>
+        
+        <!-- Boutons validation & réinitialisation -->
+        <form id="buttonBlock">
+            <input type="reset" id="reset" value="Réinitialiser" />
+            <input type="button" id="validation" value="Valider" />
+            <!--<a class="js-scrollTo" href="#page1">Valider</a>  -->
+        </form>
+    </div>
+
+    <!-- Station réservée, nom, prénom, minuteur -->
+    <div id="blocReservation" class="fadeBlock">
+        <p class="stationReservee"></p>
+        <p class="identite"></p>
+        <p class="timeur">
+            <span class="minutes">20 min</span>
+            <span class="secondes">00 s</span>
+        </p>
+        <p class="bouton">
+            <button class="annulation" type="submit">Annulation</button>
+        </p>
+    </div>
+
+    <!-- Texte d'annulation -->
+    <div id="blocAnnulation" class="fadeBlock">
+        <p id="textAnnulation"></p>
+    </div>
+
+    <!-- Texte d'expiration -->
+    <div id="blocExpiration" class="fadeBlock">
+        <p id="textExpiration"></p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/diaporama.js"></script>
+    <script src="js/ajax.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/apiVelo.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/ready.js"></script>
+    <script src="js/scroller.js"></script>
+
+</body>
+</html>
